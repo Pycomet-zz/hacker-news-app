@@ -1,4 +1,5 @@
 from config import *
+from api import api_bp
 
 
 @app.route("/")
@@ -14,5 +15,5 @@ def sync_job():
 
 
 if __name__ == "__main__":
-
+    app.register_blueprint(api_bp)
     app.run(host="0.0.0.0", port="8080")
