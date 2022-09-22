@@ -44,7 +44,7 @@ def create_item(data: dict) -> bool:
         return False
 
 
-def fetch_HN_item(uid: int, item_type: str):
+def sync_HN_to_DB(uid: int, item_type: str):
     "Fetch Data From Hacker News By Type"
     item = requests.get(
         f"https://hacker-news.firebaseio.com/v0/item/{uid}.json")
