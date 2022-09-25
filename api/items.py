@@ -3,16 +3,17 @@ from utils import *
 
 
 class ItemList(Resource):
-
     def get(self):
         "Get Db Items"
         req = client["hackernews_db"]["news"]
         data = [r for r in req.find({})]
         for item in data:
-            del item['_id']
+            if "_id" in item.keys():
+                del item["_id"]
         return {
-            "message": "Fetch succesfull!",
-            "data": data
+            "message": "Fetch succesfull",
+            "data": data,
+            "code": 200
         }
 
     def post(self):
@@ -21,37 +22,51 @@ class ItemList(Resource):
 
 
 class Item(Resource):
-
     def get(self, uid: int):
         "Get Item ID Data & Update Db"
-        req = client["hackernews_db"]["news"]
-        item = requests.get(
-            f"https://hacker-news.firebaseio.com/v0/item/{uid}.json")
+        exist, dbItem = check_db_item(int(uid))
 
-        # Check and create/update item doc in Db
-        db_item = req.find_one({"uid": uid})
+        if exist == True:
 
-        if db_item != None:
-            # Update
-            req.update_one({
-                "uid": uid
-            }, {
-                "$set": itemData
-            })
+            del dbItem["_id"]
+
+            return {"message": "Item Fetch Success", "data": dbItem, "code": 200}
 
         else:
-            # Create
-            del item["id"]
-            item["uid"] = uid
 
-            # fetch item
-
-            req.insert_one(itemData)
+            return {
+                "message": "Item Does Not Exist In Database",
+                "data": None,
+                "code": 404,
+            }
 
     def post(self, uid: int):
         "Write new items to News DB"
         payload = request.get_json()
 
-        # get lastest data uid + 1 for new item
+        # fetch latest uid
+        latest_uid = requests.get(
+            "https://hacker-news.firebaseio.com/v0/maxitem.json?print=pretty"
+        ).json()
 
-        pass
+        new_uid = int(latest_uid) + 1
+
+        # Check that it does not exist
+        exist, dbItem = check_db_item(uid=new_uid)
+
+        if exist == False:
+
+            status = create_item(uid=new_uid, data=payload)
+
+            if status == True:
+                return {"message": "New Item Created", "data": status, "code": 200}
+            else:
+                return {
+                    "message": "New Item Creation Failed",
+                    "data": status,
+                    "code": 401,
+                }
+
+        else:
+
+            return {"message": "Item Already Exist", "data": dbItem, "code": 409}
