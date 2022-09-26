@@ -27,7 +27,7 @@ class TestUtils(unittest.TestCase):
 
     def test_check_item(self):
         "Fetching User From Database"
-        res1, _ = check_db_item(32975489)
+        res1, _ = check_db_item(32985957)
         res2, _ = check_db_item(00000)
         assert res1 == True
         assert res2 == False
