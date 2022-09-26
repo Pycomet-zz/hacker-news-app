@@ -60,6 +60,11 @@ def delete_item(uid: int) -> bool:
         return False
 
 
+def get_datetime(timeInt: int) -> str:
+    "Return a date time string from Unix Time Int"
+    return datetime.utcfromtimestamp(timeInt).strftime("%Y-%m-%d %H:%M:%S")
+
+
 def get_comment(uid: int):
     "Get single comment"
     comment = requests.get(

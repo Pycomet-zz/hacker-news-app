@@ -6,15 +6,13 @@ class ItemList(Resource):
     def get(self):
         "Get Db Items"
         req = client["hackernews_db"]["news"]
-        data = [r for r in req.find({})]
+        data = [r for r in req.find({})][::-1]
         for item in data:
             if "_id" in item.keys():
                 del item["_id"]
-        return {
-            "message": "Fetch succesfull",
-            "data": data,
-            "code": 200
-        }
+            item["time"] = get_datetime(item["time"])
+
+        return {"message": "Fetch succesfull", "data": data, "code": 200}
 
     def post(self):
         payload = request.get_json()
@@ -29,6 +27,7 @@ class Item(Resource):
         if exist == True:
 
             del dbItem["_id"]
+            dbItem["time"] = get_datetime(dbItem["time"])
 
             return {"message": "Item Fetch Success", "data": dbItem, "code": 200}
 

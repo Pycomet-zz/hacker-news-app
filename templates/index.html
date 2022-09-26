@@ -71,16 +71,16 @@
                             <span>{{ post.title }} <a href="{{ post.url }}">(visit full page)</a></span>
 
                             {% if post.type == "story" %}
-                            <p>Story written by: {{ post.by }}</p>
+                            <p>Story written by: {{ post.by }} on {{ post.time }}</p>
                             <p>Score: {{ post.score }} | Comments: {{ post.descendants }}<i class="tiny material-icons">chat</i> </p>
 
                             {% elif post.type == "job" %}
-                            <p>Job posted by: {{ post.by }}</p>
+                            <p>Job posted by: {{ post.by }} on {{ post.time }}</p>
                             <p>{{ post.text }}</p>
 
 
                             {% elif post.type == "poll" %}
-                            <p>Question asked by: {{ post.by }}</p>
+                            <p>Question asked by: {{ post.by }} on {{ post.time }}</p>
                             <p>Score: {{ post.score }} | Comments: {{ post.descendants }}<i class="tiny material-icons">chat</i></p>
 
                             {% else %}
