@@ -13,12 +13,17 @@ class TestAPI(unittest.TestCase):
 
     def test_get_filtered_news_list(self):
         "Test filtering using the endpoint resource"
-        res1 = requests.post("http://127.0.0.1:8080/api/v1/news",
-                             json={'types': 'job', 'search': 'codefred'}).json()
-        res2 = requests.post("http://127.0.0.1:8080/api/v1/news",
-                             json={'types': 'job,story', 'search': ''}).json()
-        res3 = requests.post("http://127.0.0.1:8080/api/v1/news",
-                             json={'types': '', 'search': 'help'}).json()
+        res1 = requests.post(
+            "http://127.0.0.1:8080/api/v1/news",
+            json={"types": "job", "search": "codefred"},
+        ).json()
+        res2 = requests.post(
+            "http://127.0.0.1:8080/api/v1/news",
+            json={"types": "job,story", "search": ""},
+        ).json()
+        res3 = requests.post(
+            "http://127.0.0.1:8080/api/v1/news", json={"types": "", "search": "help"}
+        ).json()
         assert res1["code"] == 200
         assert res2["code"] == 200
         assert res3["code"] == 200

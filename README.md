@@ -9,6 +9,7 @@ Below are the avaialable Restful endpoints from this flask application;
 Used to fetch all the data avaialable in the database in order of the newest entries being at the top.
 
 **URL** : `/api/v1/news`
+
 **METHOD** : `GET`
 
 ### Success Response
@@ -30,7 +31,17 @@ Used to fetch all the data avaialable in the database in order of the newest ent
 Used to fetch data avaialable in the database based on text search or by the news type (story, job or poll).
 
 **URL** : `/api/v1/news`
+
 **METHOD** : `POST`
+
+**PARAMS** :
+
+```json
+{
+  "search": "Query string to search",
+  "types": "news types seperated by ',' "
+}
+```
 
 ### Success Response
 
@@ -53,6 +64,7 @@ Used to fetch a single news data from the database.
 `<news_id> is unique news id`
 
 **URL** : `/api/v1/news/<news_id>`
+
 **METHOD** : `GET`
 
 ### Success Response
@@ -76,7 +88,23 @@ Used to create/write a new data into database with a new unique id.
 `<news_id> is not neccessarily valid`
 
 **URL** : `/api/v1/news/<news_id>`
+
 **METHOD** : `POST`
+
+**PARAMS** :
+
+```json
+{
+  "by": "codefred",
+  "type": "job",
+  "time": 2436273623,
+  "deleted": false,
+  "dead": false,
+  "text": "This is a test job",
+  "url": "https://google.com",
+  "title": "Flow design"
+}
+```
 
 ### Success Response
 

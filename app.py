@@ -10,8 +10,7 @@ def index():
     form = SearchForm(request.form)
     if request.method == "POST":
 
-        keys = [r for r in request.form.keys() if r not in [
-            "csrf_token", "search"]]
+        keys = [r for r in request.form.keys() if r not in ["csrf_token", "search"]]
 
         types = ",".join(keys)
         search = request.form.get("search") or ""

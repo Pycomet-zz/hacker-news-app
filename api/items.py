@@ -24,10 +24,10 @@ class ItemList(Resource):
 
         # Extract based on types first
         req = client["hackernews_db"]["news"]
-        if len(types) > 0 and types[0] != '':
+        if len(types) > 0 and types[0] != "":
 
             raw_data = []
-            if search != '':
+            if search != "":
 
                 for ts in types:
                     [
@@ -37,10 +37,7 @@ class ItemList(Resource):
             else:
 
                 for ts in types:
-                    [
-                        raw_data.append(r)
-                        for r in req.find({"type": ts})
-                    ]
+                    [raw_data.append(r) for r in req.find({"type": ts})]
             data = raw_data[::-1]
         else:
             data = [r for r in req.find({"$text": {"$search": search}})][::-1]
