@@ -7,12 +7,14 @@ from api import api_bp
 
 @app.route("/")
 @app.route("/index")
-def default_route():
+def index():
 
     fetch_req = requests.get("http://127.0.0.1:8080/api/v1/news").json()
 
     page, per_page, offset = get_page_args(
-        page_parameter="page", per_page_parameter="per_page", per_page=10
+        page_parameter="page",
+        per_page_parameter="per_page",
+        per_page=10
     )
     total = len(fetch_req["data"])
 
@@ -20,7 +22,10 @@ def default_route():
     pagination_data = fetch_req["data"][offset:next_stop]
 
     pagination = Pagination(
-        page=page, per_page=per_page, total=total, css_framework="materialize"
+        page=page,
+        per_page=per_page,
+        total=total,
+        css_framework="materialize"
     )
 
     return (
