@@ -2,9 +2,12 @@ import logging
 import os
 import re
 import requests
+import asyncio
+import time
 from flask import Flask, Blueprint, make_response, request, render_template
 from flask_apscheduler import APScheduler
 from flask_restful import Api, Resource
+from flask_wtf.csrf import CSRFProtect
 from flask_paginate import Pagination, get_page_args
 from datetime import date, datetime
 from pymongo import MongoClient
@@ -18,6 +21,8 @@ load_dotenv()
 # set configuration values
 class Config:
     SCHEDULER_API_ENABLED = True
+    SECRET_KEY = os.getenv("SECRET_KEY")
+    WTF_CSRF_ENABLED = False
 
 
 # Logging Setup
@@ -30,6 +35,9 @@ client = MongoClient(DATABASE_STRING)
 
 app = Flask(__name__)
 app.config.from_object(Config())
+
+csrf = CSRFProtect()
+csrf.init_app(app)
 
 # initialize scheduler
 scheduler = APScheduler()

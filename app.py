@@ -1,20 +1,31 @@
 from config import *
 from utils import *
-import asyncio
-import time
+from forms import SearchForm
 from api import api_bp
 
 
-@app.route("/")
-@app.route("/index")
+@app.route("/", methods=["GET", "POST"])
 def index():
 
-    fetch_req = requests.get("http://127.0.0.1:8080/api/v1/news").json()
+    form = SearchForm(request.form)
+    if request.method == "POST":
+
+        keys = [r for r in request.form.keys() if r not in [
+            "csrf_token", "search"]]
+
+        types = ",".join(keys)
+        search = request.form.get("search") or ""
+
+        fetch_req = requests.post(
+            "http://127.0.0.1:8080/api/v1/news",
+            json={"search": search, "types": types},
+        ).json()
+
+    else:
+        fetch_req = requests.get("http://127.0.0.1:8080/api/v1/news").json()
 
     page, per_page, offset = get_page_args(
-        page_parameter="page",
-        per_page_parameter="per_page",
-        per_page=10
+        page_parameter="page", per_page_parameter="per_page", per_page=10
     )
     total = len(fetch_req["data"])
 
@@ -22,10 +33,7 @@ def index():
     pagination_data = fetch_req["data"][offset:next_stop]
 
     pagination = Pagination(
-        page=page,
-        per_page=per_page,
-        total=total,
-        css_framework="materialize"
+        page=page, per_page=per_page, total=total, css_framework="materialize"
     )
 
     return (
@@ -35,6 +43,7 @@ def index():
             page=page,
             per_page=10,
             pagination=pagination,
+            form=form,
         ),
         200,
     )

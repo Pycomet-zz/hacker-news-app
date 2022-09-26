@@ -12,11 +12,45 @@ class ItemList(Resource):
                 del item["_id"]
             item["time"] = get_datetime(item["time"])
 
-        return {"message": "Fetch succesfull", "data": data, "code": 200}
+        return {"message": "Fetch Succesfully", "data": data, "code": 200}
 
     def post(self):
+        "Filter end point for retrieving data"
         payload = request.get_json()
-        return f"You are not allowed to create users through the API", 500
+
+        types = payload["types"].split(",")
+
+        search = payload["search"]
+
+        # Extract based on types first
+        req = client["hackernews_db"]["news"]
+        if len(types) > 0 and types[0] != '':
+
+            raw_data = []
+            if search != '':
+
+                for ts in types:
+                    [
+                        raw_data.append(r)
+                        for r in req.find({"$text": {"$search": search}, "type": ts})
+                    ]
+            else:
+
+                for ts in types:
+                    [
+                        raw_data.append(r)
+                        for r in req.find({"type": ts})
+                    ]
+            data = raw_data[::-1]
+        else:
+            data = [r for r in req.find({"$text": {"$search": search}})][::-1]
+
+        for item in data:
+            if "_id" in item.keys():
+                del item["_id"]
+            item["time"] = get_datetime(item["time"])
+
+        return {"message": "Fetched Successfully", "data": data, "code": 200}
 
 
 class Item(Resource):
